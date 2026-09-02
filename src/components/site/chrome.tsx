@@ -29,23 +29,26 @@ export function SiteHeader() {
           <Wordmark className="h-11 -my-2" />
         </Link>
         <nav className="flex items-center gap-1 sm:gap-2">
-          {nav.slice(1).map((item) => (
+          {nav.map((item) => (
             <Link
               key={item.to}
               to={item.to}
-              className="px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground sm:px-2.5"
               activeProps={{ className: "text-foreground" }}
+              activeOptions={{ exact: item.to === "/" }}
             >
               {item.label}
             </Link>
           ))}
-          <a
-            href="mailto:info@nonchtech.com"
+          <Link
+            to="/"
+            hash="demo"
             className="ml-2 hidden border border-ink px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:bg-ink hover:text-ink-foreground sm:inline-block"
           >
-            Book a call
-          </a>
+            See it work
+          </Link>
         </nav>
+
       </div>
     </header>
   );
