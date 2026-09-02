@@ -1,13 +1,13 @@
 import { Link } from "@tanstack/react-router";
 
-import logo from "@/assets/nonch-logo.png.asset.json";
+import logo from "@/assets/nonch-logo-nobg.png.asset.json";
 
 export function Wordmark({ className = "h-9" }: { className?: string }) {
   return (
     <img
       src={logo.url}
       alt="nonchtech"
-      className={`${className} w-auto object-contain object-left mix-blend-multiply dark:mix-blend-normal`}
+      className={`${className} w-auto object-contain object-left`}
       width={220}
       height={64}
     />
