@@ -105,11 +105,8 @@ function Home() {
   return (
     <>
       <section className="border-b border-hairline">
-        <div className="mx-auto max-w-6xl px-5 pb-12 pt-10 sm:pt-14">
-          <div className="rise">
-            <Wordmark className="h-14 sm:h-16" />
-          </div>
-          <h1 className="rise mt-6 max-w-4xl text-[2.5rem] leading-[0.98] sm:text-6xl lg:text-7xl">
+        <div className="mx-auto max-w-6xl px-5 pb-14 pt-14 sm:pt-20">
+          <h1 className="rise max-w-4xl text-[2.5rem] leading-[0.98] sm:text-6xl lg:text-7xl">
             A group of <span className="text-accent">NONCHALANT</span> software engineers delivering
             curated solutions to elevate your entrepreneurial journey.
           </h1>

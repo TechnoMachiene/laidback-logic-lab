@@ -8,8 +8,8 @@ export function Wordmark({ className = "h-9" }: { className?: string }) {
       src={logo.url}
       alt="nonchtech"
       className={`${className} w-auto object-contain object-left`}
-      width={220}
-      height={64}
+      width={440}
+      height={128}
     />
   );
 }
