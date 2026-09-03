@@ -10,6 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import { SiteFooter, SiteHeader } from "@/components/site/chrome";
+import { ChatWidget } from "@/components/demo/ChatWidget";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
