@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import { LiveDemo } from "@/components/demo/LiveDemo";
 import { MarkRecline, serviceMarks } from "@/components/site/marks";
@@ -101,6 +102,12 @@ const process = [
 ];
 
 function Home() {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+    }
+  }, []);
+
   return (
     <>
       <section className="border-b border-hairline">
@@ -114,13 +121,6 @@ function Home() {
               Small team. Fully remote. We ship agents, models and products that hold up in
               production — then get out of your way.
             </p>
-            <a
-              href="#demo"
-              className="inline-flex w-fit items-center gap-3 bg-ink px-6 py-3 text-base font-medium text-ink-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-            >
-              See it work
-              <span aria-hidden="true">↓</span>
-            </a>
           </div>
         </div>
       </section>
