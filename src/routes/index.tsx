@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { LiveDemo } from "@/components/demo/LiveDemo";
-import { Wordmark } from "@/components/site/chrome";
 import { MarkRecline, serviceMarks } from "@/components/site/marks";
 
 export const Route = createFileRoute("/")({

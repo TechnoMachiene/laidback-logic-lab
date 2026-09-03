@@ -26,7 +26,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 border-b border-hairline bg-background/85 backdrop-blur-sm">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
         <Link to="/" aria-label="nonchtech home" className="-ml-1 shrink-0 overflow-hidden">
-          <Wordmark className="h-11 -my-2" />
+          <Wordmark className="h-12" />
         </Link>
         <nav className="flex items-center gap-1 sm:gap-2">
           {nav.map((item) => (
