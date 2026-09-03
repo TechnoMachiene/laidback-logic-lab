@@ -137,6 +137,7 @@ function RootComponent() {
           <Outlet />
         </main>
         <SiteFooter />
+        <ChatWidget />
       </div>
     </QueryClientProvider>
 
