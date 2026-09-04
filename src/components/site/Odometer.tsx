@@ -55,9 +55,9 @@ function DigitReel({
   rolled: boolean;
   index: number;
 }) {
-  // Reel shows a full 0-9 cycle plus the final digit, so it always spins at
-  // least one full turn before landing.
-  const reel = DIGITS + digit;
+  // Reel shows a full 0-9 cycle plus 0..digit, so it always spins at least
+  // one full turn and the final digit sits at index 10 + digit.
+  const reel = DIGITS + DIGITS.slice(0, digit + 1);
   return (
     <span
       aria-hidden="true"
