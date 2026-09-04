@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 import { LiveDemo } from "@/components/demo/LiveDemo";
 import { MarkRecline, serviceMarks } from "@/components/site/marks";
+import { Odometer } from "@/components/site/Odometer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -179,7 +180,10 @@ function Home() {
           <div className="mt-12 grid gap-10 md:grid-cols-3">
             {proof.map((p) => (
               <div key={p.slug} className="border-t-2 border-ink pt-5">
-                <p className="font-display text-5xl font-extrabold tracking-tight">{p.metric}</p>
+                <Odometer
+                  value={p.metric}
+                  className="font-display text-5xl font-extrabold tracking-tight"
+                />
                 <p className="mt-1 text-sm font-medium text-accent">{p.label}</p>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
               </div>
