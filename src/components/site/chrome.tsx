@@ -41,7 +41,7 @@ export function SiteHeader() {
           <Link
             to="/"
             hash="demo"
-            className="ml-2 hidden border border-ink px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:bg-ink hover:text-ink-foreground sm:inline-block"
+            className="ml-2 hidden border border-accent px-3 py-1.5 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-accent-foreground sm:inline-block"
           >
             See it work
           </Link>
