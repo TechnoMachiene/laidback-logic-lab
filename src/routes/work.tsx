@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
+import { Odometer } from "@/components/site/Odometer";
+
 export const Route = createFileRoute("/work")({
   head: () => ({
     meta: [
@@ -119,7 +121,10 @@ function Work() {
             className="grid scroll-mt-24 gap-8 border-b border-hairline py-14 md:grid-cols-[260px_1fr]"
           >
             <div>
-              <p className="font-display text-5xl font-extrabold tracking-tight">{c.metric}</p>
+              <Odometer
+                value={c.metric}
+                className="font-display text-5xl font-extrabold tracking-tight"
+              />
               <p className="mt-1 text-sm font-medium text-accent">{c.label}</p>
               <p className="mt-4 text-xs uppercase tracking-wide text-muted-foreground">
                 {c.sector}
