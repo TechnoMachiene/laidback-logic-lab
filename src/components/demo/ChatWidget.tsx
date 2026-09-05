@@ -122,14 +122,41 @@ export function ChatWidget() {
                 Real model · streamed
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              aria-label="Close chat"
-              className="px-2 py-1 text-lg leading-none transition-opacity hover:opacity-70"
-            >
-              ×
-            </button>
+            <div className="flex items-center gap-1">
+              {voiceSupported && (
+                <button
+                  type="button"
+                  onClick={() => setSpeak((v) => !v)}
+                  aria-pressed={speak}
+                  aria-label={speak ? "Turn off spoken replies" : "Turn on spoken replies"}
+                  title={speak ? "Spoken replies on" : "Spoken replies off"}
+                  className={`px-2 py-1 text-xs transition-opacity hover:opacity-70 ${
+                    speak ? "text-accent" : "text-ink-foreground/60"
+                  }`}
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    className="h-4 w-4"
+                    aria-hidden="true"
+                  >
+                    <path d="M4 9v6h4l5 4V5L8 9H4Z" strokeLinejoin="round" />
+                    {speak && <path d="M16.5 8.5a5 5 0 0 1 0 7" strokeLinecap="round" />}
+                  </svg>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close chat"
+                className="px-2 py-1 text-lg leading-none transition-opacity hover:opacity-70"
+              >
+                ×
+              </button>
+            </div>
+
           </div>
 
           <div ref={scroller} className="flex-1 space-y-3 overflow-y-auto bg-paper p-3">
