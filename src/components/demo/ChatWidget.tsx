@@ -241,7 +241,6 @@ export function ChatWidget() {
               </button>
             )}
             <button
-
               type="submit"
               disabled={busy || !input.trim()}
               className="bg-ink px-4 text-sm font-medium text-ink-foreground transition-opacity disabled:opacity-35"
