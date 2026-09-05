@@ -216,7 +216,32 @@ export function ChatWidget() {
               aria-label="Message the agent"
               className="flex-1 bg-transparent px-3 py-3 text-sm outline-none placeholder:text-muted-foreground"
             />
+            {voiceSupported && (
+              <button
+                type="button"
+                onClick={toggleMic}
+                aria-pressed={listening}
+                aria-label={listening ? "Stop voice input" : "Speak your message"}
+                title={listening ? "Listening…" : "Speak your message"}
+                className={`px-3 transition-colors ${
+                  listening ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  className="h-5 w-5"
+                  aria-hidden="true"
+                >
+                  <rect x="9" y="3" width="6" height="11" rx="3" />
+                  <path d="M5 11a7 7 0 0 0 14 0M12 18v3" strokeLinecap="round" />
+                </svg>
+              </button>
+            )}
             <button
+
               type="submit"
               disabled={busy || !input.trim()}
               className="bg-ink px-4 text-sm font-medium text-ink-foreground transition-opacity disabled:opacity-35"
