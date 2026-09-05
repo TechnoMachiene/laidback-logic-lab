@@ -1,16 +1,22 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * Floating chat widget, fixed bottom-right on every page.
  * Talks to the same live agent (/api/chat) as the homepage demo.
+ * Optional voice: browser speech recognition for input, speech synthesis for replies.
  */
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
+  const [listening, setListening] = useState(false);
+  const [speak, setSpeak] = useState(false);
+  const [voiceSupported, setVoiceSupported] = useState(false);
   const scroller = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const recognition = useRef<any>(null);
+  const spoken = useRef<Set<string>>(new Set());
   const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
   });
@@ -25,12 +31,81 @@ export function ChatWidget() {
     if (open && !busy) inputRef.current?.focus();
   }, [open, busy]);
 
-  function send(text: string) {
-    const trimmed = text.trim();
-    if (!trimmed || busy) return;
-    void sendMessage({ text: trimmed });
-    setInput("");
+  const send = useCallback(
+    (text: string) => {
+      const trimmed = text.trim();
+      if (!trimmed || busy) return;
+      void sendMessage({ text: trimmed });
+      setInput("");
+    },
+    [busy, sendMessage],
+  );
+
+  // Set up browser speech recognition once, if the browser has it.
+  useEffect(() => {
+    const SR =
+      (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition ?? null;
+    if (!SR || typeof window.speechSynthesis === "undefined") return;
+    setVoiceSupported(true);
+    const rec = new SR();
+    rec.lang = "en-US";
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+    rec.onresult = (e: any) => {
+      const said = e.results?.[0]?.[0]?.transcript ?? "";
+      if (said) send(said);
+    };
+    rec.onend = () => setListening(false);
+    rec.onerror = () => setListening(false);
+    recognition.current = rec;
+    return () => {
+      try {
+        rec.abort();
+      } catch {
+        /* ignore */
+      }
+      window.speechSynthesis.cancel();
+    };
+  }, [send]);
+
+  function toggleMic() {
+    const rec = recognition.current;
+    if (!rec) return;
+    if (listening) {
+      rec.stop();
+      setListening(false);
+      return;
+    }
+    window.speechSynthesis?.cancel();
+    try {
+      rec.start();
+      setListening(true);
+    } catch {
+      setListening(false);
+    }
   }
+
+  // Read finished assistant replies out loud when voice replies are on.
+  useEffect(() => {
+    if (!speak || busy) return;
+    const last = messages[messages.length - 1];
+    if (!last || last.role !== "assistant" || spoken.current.has(last.id)) return;
+    const text = last.parts
+      .map((part) => (part.type === "text" ? part.text : ""))
+      .join("")
+      .trim();
+    if (!text) return;
+    spoken.current.add(last.id);
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 1.02;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+  }, [messages, speak, busy]);
+
+  useEffect(() => {
+    if (!speak) window.speechSynthesis?.cancel();
+  }, [speak]);
+
 
   return (
     <div className="fixed bottom-5 right-5 z-[60] flex flex-col items-end gap-3">
@@ -47,14 +122,41 @@ export function ChatWidget() {
                 Real model · streamed
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              aria-label="Close chat"
-              className="px-2 py-1 text-lg leading-none transition-opacity hover:opacity-70"
-            >
-              ×
-            </button>
+            <div className="flex items-center gap-1">
+              {voiceSupported && (
+                <button
+                  type="button"
+                  onClick={() => setSpeak((v) => !v)}
+                  aria-pressed={speak}
+                  aria-label={speak ? "Turn off spoken replies" : "Turn on spoken replies"}
+                  title={speak ? "Spoken replies on" : "Spoken replies off"}
+                  className={`px-2 py-1 text-xs transition-opacity hover:opacity-70 ${
+                    speak ? "text-accent" : "text-ink-foreground/60"
+                  }`}
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    className="h-4 w-4"
+                    aria-hidden="true"
+                  >
+                    <path d="M4 9v6h4l5 4V5L8 9H4Z" strokeLinejoin="round" />
+                    {speak && <path d="M16.5 8.5a5 5 0 0 1 0 7" strokeLinecap="round" />}
+                  </svg>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close chat"
+                className="px-2 py-1 text-lg leading-none transition-opacity hover:opacity-70"
+              >
+                ×
+              </button>
+            </div>
+
           </div>
 
           <div ref={scroller} className="flex-1 space-y-3 overflow-y-auto bg-paper p-3">
@@ -114,6 +216,30 @@ export function ChatWidget() {
               aria-label="Message the agent"
               className="flex-1 bg-transparent px-3 py-3 text-sm outline-none placeholder:text-muted-foreground"
             />
+            {voiceSupported && (
+              <button
+                type="button"
+                onClick={toggleMic}
+                aria-pressed={listening}
+                aria-label={listening ? "Stop voice input" : "Speak your message"}
+                title={listening ? "Listening…" : "Speak your message"}
+                className={`px-3 transition-colors ${
+                  listening ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  className="h-5 w-5"
+                  aria-hidden="true"
+                >
+                  <rect x="9" y="3" width="6" height="11" rx="3" />
+                  <path d="M5 11a7 7 0 0 0 14 0M12 18v3" strokeLinecap="round" />
+                </svg>
+              </button>
+            )}
             <button
               type="submit"
               disabled={busy || !input.trim()}
